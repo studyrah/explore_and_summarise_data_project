@@ -1,0 +1,21 @@
+[References]
+============
+
+#use of aes_string to enable variable definition of x and color features
+http://stackoverflow.com/questions/15458526/r-pass-variable-column-names-to-ggplot2
+
+# use of [] syntax to subset based upon variable (rather than subset function)
+http://stackoverflow.com/questions/17075529/r-subset-based-on-variable-column-name
+
+# relationship between alcohol and density
+https://answers.yahoo.com/question/index?qid=20130520032820AAdgLx6
+
+#Article discussing relationhsip between alcohol and r.s also suggests you need 
+#high acidity with high sugar
+http://drinks.seriouseats.com/2013/04/wine-jargon-what-is-residual-sugar-riesling-fermentation-steven-grubbs.html
+
+#Relationship between total acidity and pH in wine
+http://en.wikipedia.org/wiki/Acids_in_wine
+
+#Formatting titles in grid extra
+http://r.789695.n4.nabble.com/Styling-gridExtra-s-title-and-left-labels-td4639388.html
