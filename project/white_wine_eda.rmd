@@ -1167,48 +1167,24 @@ NO
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One, fig.height=6}
 # save typing errors for plot labels
-alcohol_lab <- "density (% by volume)"
-
-# share some properties, namely where to stash the legend
-base <- ggplot() + theme(legend.position="top")
-
-# setup the boxplot against quality
-a <- base + geom_boxplot(aes(x=factor(quality), y=alcohol, 
-                                    color=quality), data = wines) +
-  scale_y_continuous(breaks = seq(0,max(wines$alcohol),0.25)) +
-  ylab(alcohol_lab) + xlab("quality")
-
-## now focus upon the bulk of the data
-b <- a + coord_cartesian(ylim = c(9,13))
-
-# histogram individual properties with a facet wrap of quality.category
-c <- base + 
-  geom_histogram(aes(x = alcohol, fill = quality.category), 
-                 data = wines, color = "darkblue", binwidth = .1) +
-  scale_x_continuous(breaks = seq(8, 18, 1)) +    
-  facet_wrap(~quality.category, ncol = 1, scales = "free_y") +
-   ylab("wine count") + xlab(alcohol_lab)  
+alcohol_lab <- "alcohol (% by volume)"
 
 # freqpoly - palmed off to a function to save repetition
-d <- freqpolyByHMLCategory(wines, 'alcohol', 'quality.category') +
-    theme(legend.position="top") + ylab("% wines") + xlab(alcohol_lab)    
-
-# note, missing c. For some reason c fails when I run knit (not when run direct)
-# textGrob courtesy - http://r.789695.n4.nabble.com/Styling-gridExtra-s-title-and-left-labels-td4639388.html
-grid.arrange(a,b,c,d, ncol = 4, 
-          main = textGrob("Alcohol Breakdown by Quality", gp=gpar(fontsize=18)))
+freqpolyByHMLCategory(wines, 'alcohol', 'quality.category') +
+    theme(legend.position="right") + ylab("% wines") + xlab(alcohol_lab) + 
+    ggtitle("Alcohol Breakdown by Quality")
 ```
 
 Alcohol is by far the single biggest contributor to the quality of white wine
 (in this sample). As a crude measure it has a correlation (Pearson) value of 
 0.436, over twice as much as the next most significant (chlorides at -0.21)
 
-The boxplots show quite clearly the marked increase in quality as you increase
-the level of alcohol, with a sweetspot between around 11 to 13.
+The density plot shows quite clearly the marked increase in quality as you 
+increasethe level of alcohol, with a sweetspot between around 11 to 13.
 
-The histogram and frequency polygon both show that the distribution 
-of low and medium quality wines is 'quite similar' whereas (as expected) the
-distribution of high quality wines is noticeably right shifted (higher alcohol).
+The distribution of low and medium quality wines is 'quite similar' whereas 
+(as expected) the distribution of high quality wines is noticeably right shifted 
+(higher alcohol).
 
 It's also worth noting that there is a smaller peak of higher quality wines
 with lower alcohol content (around 9%). So, we have:
@@ -1231,115 +1207,42 @@ following plots
 
 ## The recipe for a high quality wine is .....
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two, fig.height=18}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
 # save typing errors for plot labels
-residual_sugar_lab <- "residual.sugar (g / dm^3)"
 chlorides_lab <- "chlorides (sodium chloride - g / dm^3)"
-alcohol_lab <- "(% by volume)"
+alcohol_lab <- "alcohol (% by volume)"
 
 # consider chlorides vs alcohol
-a = ggplot(aes(x = chlorides, 
-               y = alcohol, 
-               color = quality.category), data = wines) +
-  geom_point(alpha = 0.1, position = position_jitter()) +
-  coord_cartesian(xlim = c(0.01, 0.075)) +
-  geom_smooth() +
-  facet_wrap(~quality.category, ncol = 1, scales = "free_y") +
-  ylab(alcohol_lab) + xlab(chlorides_lab)
 
-b = ggplot(aes(x = chlorides, 
-               y = alcohol, 
-               color = quality.category,
-               shape = quality.category), data = wines) +
+ggplot(aes(x = chlorides, 
+           y = alcohol, 
+           color = quality.category), data = wines) +
   geom_point(alpha = 0.2, position = position_jitter()) +
   coord_cartesian(xlim = c(0.01, 0.075)) +
   geom_smooth() +
-  ylab(alcohol_lab) + xlab(chlorides_lab)
-
-# residual.sugar vs alcohol
-c = ggplot(aes(x = residual.sugar, 
-               y = alcohol, 
-               color = quality.category), data = wines) +
-  geom_point(alpha = 0.2, position = position_jitter()) +
-  coord_cartesian(xlim = c(0, 20), ylim = c(5,15)) +
-  geom_smooth() +
   facet_wrap(~quality.category, ncol = 1, scales = "free_y") +
-  ylab(alcohol_lab) + xlab(residual_sugar_lab)
-
-d = ggplot(aes(x = residual.sugar, 
-               y = alcohol, 
-               color = quality.category, 
-               shape = quality.category), data = wines) +
-  geom_point(alpha = 0.2, position = position_jitter()) +
-  coord_cartesian(xlim = c(0, 20)) +
-  geom_smooth() +
-  ylab(alcohol_lab) + xlab(residual_sugar_lab)
-
-# residual.sugar vs chlorides
-e = ggplot(aes(x = residual.sugar, 
-               y = chlorides, 
-               color = quality.category), data = wines) +
-  geom_point(alpha = 0.2, position = position_jitter()) +
-  coord_cartesian(xlim = c(0, 20), ylim = c(0.01, 0.075)) +
-  geom_smooth() +
-  facet_wrap(~quality.category, ncol = 1, scales = "free_y") +
-  ylab(chlorides_lab) + xlab(residual_sugar_lab)
-
-f = ggplot(aes(x = residual.sugar, 
-               y = chlorides, 
-               color = quality.category, 
-               shape = quality.category), data = wines) +
-  geom_point(alpha = 0.2, position = position_jitter()) +
-  coord_cartesian(xlim = c(0, 20), ylim = c(0.01, 0.075)) +
-  geom_smooth() +
-  ylab(chlorides_lab) + xlab(residual_sugar_lab)
-
-grid.arrange(a,b,c,d,e,f, ncol = 2, 
-      main = textGrob("Key Features Pairwise Effect on Quality", 
-                      gp=gpar(fontsize=18)))
+  ylab(alcohol_lab) + xlab(chlorides_lab) +
+  ggtitle("Chlorides and Alcohol Combined Effect on Quality")
 ```
 
-Here we have pairwise plotted the features (alcohol, residual.sugar and 
-chlorides) against each other and distinguished quality by colour and shape, in
-an attempt to see whether any/each pair re-inforces each other. In particular to
-see whether the high quality clusters (large and small) outlined earlier still
-exist when we combine features.
-
-Two views of each pair are shown, the left one with a facet wrap by quality so 
-we can see each distribution in isolation (hopefully showing the two high 
-quality clusters) and the right one with the quality overlayed (hopefully 
-showing differences between the category levels)
+Here we plot chlorides against alcohol facet wrapped by qaulity to see whether 
+they re-inforce each other.  In particular to see whether the high quality 
+clusters (large and small) outlined earlier still exist when we combine features.
 
 Although it is difficult to be certain, particularly because of the uneven 
-distribution (there are many more medium quality wines), in all pairs it looks
-like the two high quality clusters hypothesis still holds.
+distribution (there are many more medium quality wines), it looks like the two 
+high quality clusters hypothesis just about still holds.
 
-Considering each in turn:
-
-* chlorides vs alcohol
-
-There does appear to be a large clustering of blue (high quality) top right with 
+There does appear to be a large clustering of blue (high quality) top right with
 low chlorides and high alcohol, though it's not very dense. Similarly there 
-appears to be a smaller cluster bottom right (low alcohol and high chlorides).
+appears to be a smaller cluster bottom right (low alcohol and high chlorides).  
+Moreover (with a bit of a squint) it looks like the critical mass of low/medium 
+quality wines sit somewhere between the two clusters.
 
-Moreover (with a bit of a squint) it looks like the critical mass of medium
-quality wines sits somewhere between the two clusters
+An analogous pattern could be observed if we also plotted the following:
 
-* residual.sugar vs alcohol
-
-Again there is a large cluster of blue (high quality),
-top left (high alcohol and low residual.sugar). Density (of blue) than reduces 
-as alcohol decreases and residual.sugar increases until we see a smaller blue
-cluster with low alcohol (~ 9) and high residual.sugar (~ 12 - 15)
-
-Low and medium quality wines tend to have a lower alcohol content and a more
-evenly spread residual.sugar
-
+* residual.suger vs alcohol
 * residual.sugar vs chlorides
-
-This time we see the larger cluster with low residual.sugar and low chlorides.
-The smaller cluster with high values for each.  That said it's not as clear as
-with the other pairs considered.
 
 ### Tentative (very) hypothesis
 
@@ -1355,44 +1258,34 @@ recipes but you will increase your probability of having a high quality wine.
 
 ### Plot Three
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
-# save typing errors for plot labels
+
 volatile_acidity_lab <- "volatile.acidity (g / dm^3)"
-alcohol_lab <- "(% by volume)"
+alcohol_lab <- "alcohol (% by volume)"
 
 # volatile.acidity vs alcohol
-a = ggplot(aes(x = volatile.acidity, 
-               y = alcohol, 
-               color = quality.category), data = wines) +
-  geom_point(alpha = 0.1, position = position_jitter()) +
-  coord_cartesian(xlim = c(0.1, 0.5)) +
-  geom_smooth() +
-  facet_wrap(~quality.category, ncol = 1, scales = "free_y") +
-  ylab(alcohol_lab) + xlab(volatile_acidity_lab)
+ggplot(aes(x = volatile.acidity, 
+          y = alcohol, 
+          color = quality.category,
+          shape = quality.category), data = wines) +
+geom_point(alpha = 0.1, position = position_jitter()) +
+coord_cartesian(xlim = c(0.1, 0.5)) +
+geom_smooth() +
+ylab(alcohol_lab) + xlab(volatile_acidity_lab) +
+ggtitle("volatile.acidity vs Alcohol")
 
-b = ggplot(aes(x = volatile.acidity, 
-               y = alcohol, 
-               color = quality.category,
-               shape = quality.category), data = wines) +
-  geom_point(alpha = 0.1, position = position_jitter()) +
-  coord_cartesian(xlim = c(0.1, 0.5)) +
-  geom_smooth() +
-  ylab(alcohol_lab) + xlab(volatile_acidity_lab)
-
-grid.arrange(a,b, ncol = 2, 
-      main = textGrob("volatile.acidity vs alcohol", gp=gpar(fontsize=18)))
 ```
 
 ### Description Three
 
 When plotting volatile.acidity against alcohol split by quality we see a marked
-difference for high quality wines compared to the rest.  We see a fairly strong
-positive correlation (Pearson 0.5) for high quality wines vs virtually nothing
-for the rest.
+difference in distribution for high quality wines compared to the rest.  
+We see a fairly strong positive correlation (Pearson 0.5) for high quality wines
+vs virtually nothing for the rest.
 
-So, volatile.acidity might be another feature worth considering when 
-producing/predicting/evaluating white wine.
+So, getting the balance of volatile.acidity to alcohol level correct might be
+a further worthwhile consideration when producting/predicting/evaluating white
+wine.
 
-------
 
 # Reflection
 
